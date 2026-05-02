@@ -1,62 +1,98 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>Results</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/static/css/result.css" />
-  </head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+</head>
 
-  <body>
-    <div class="container">
-      <div class="card">
-        <h2>📊 Clustering Results</h2>
+<body>
 
-        <div class="highlight">Best Clusters: <b>{{ k }}</b></div>
+<div class="container">
 
-        <div class="highlight">Best Algorithm: <b>{{ algo }}</b></div>
-      </div>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Analysis Dashboard</h1>
+        <p>Clustering insights & performance metrics</p>
+    </div>
 
-      <div class="card">
-        <h3>📈 Silhouette Scores</h3>
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+        <div class="kpi">
+            <h4>Best Clusters</h4>
+            <h2>{{ k }}</h2>
+        </div>
+
+        <div class="kpi highlight">
+            <h4>Best Algorithm</h4>
+            <h2>{{ algo }}</h2>
+        </div>
+
+        <div class="kpi">
+            <h4>Total Models</h4>
+            <h2>3</h2>
+        </div>
+    </div>
+
+    <!-- SCORE BARS -->
+    <div class="card">
+        <h3>Model Performance (Silhouette Score)</h3>
 
         {% for name, score in scores.items() %}
-        <div class="score-item">
-          <span>{{ name }}</span>
-          <span>{{ "%.2f"|format(score) }}</span>
+        <div class="bar">
+            <span>{{ name }}</span>
+            <div class="progress">
+                <div class="fill" style="width: {{ score * 100 }}%"></div>
+            </div>
+            <span>{{ "%.2f"|format(score) }}</span>
         </div>
         {% endfor %}
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <h3>K-Means</h3>
-          <img src="/static/plots/kmeans.png" />
-        </div>
-
-        <div class="card">
-          <h3>Hierarchical</h3>
-          <img src="/static/plots/hierarchical.png" />
-        </div>
-
-        <div class="card">
-          <h3>DBSCAN</h3>
-          <img src="/static/plots/dbscan.png" />
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>📉 Elbow Method</h3>
-        <img src="/static/plots/elbow.png" />
-      </div>
-
-      <div class="back-btn">
-        <a href="/">⬅ Back</a>
-      </div>
     </div>
-  </body>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('kmeans')">K-Means</button>
+        <button class="tab" onclick="showTab('hier')">Hierarchical</button>
+        <button class="tab" onclick="showTab('db')">DBSCAN</button>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="tab-content active" id="kmeans">
+        <img src="/static/plots/kmeans.png">
+    </div>
+
+    <div class="tab-content" id="hier">
+        <img src="/static/plots/hierarchical.png">
+    </div>
+
+    <div class="tab-content" id="db">
+        <img src="/static/plots/dbscan.png">
+    </div>
+
+    <!-- ELBOW -->
+    <div class="card">
+        <h3>Elbow Method</h3>
+        <img src="/static/plots/elbow.png">
+    </div>
+
+    <!-- BACK -->
+    <div class="back">
+        <a href="/">⬅ Back</a>
+    </div>
+
+</div>
+
+<script>
+function showTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    event.target.classList.add('active');
+    document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
 </html>

@@ -4,36 +4,38 @@
     <title>Clustering Analyzer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="bg-blur"></div>
 
-    <div class="hero">
+<div class="container">
+
+    <div class="header">
         <h1>Clustering Analyzer</h1>
-        <p>Upload your dataset and discover hidden patterns using ML algorithms</p>
+        <p>Powerful ML insights in seconds</p>
     </div>
 
-    <div class="upload-card">
+    <div class="card">
 
-        <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+        <form action="/upload" method="post" enctype="multipart/form-data" id="form">
 
             <div class="drop-zone" id="dropZone">
                 <input type="file" name="dataset" id="fileInput" accept=".csv" hidden required>
 
-                <div class="upload-content">
-                    <div class="icon">📂</div>
-                    <p class="main-text">Drag & Drop your CSV file</p>
-                    <span>or click to browse</span>
+                <div class="dz-content">
+                    <div class="icon">⬆</div>
+                    <h3>Drop your dataset</h3>
+                    <p>or click to browse (.csv only)</p>
                 </div>
             </div>
 
-            <div class="file-name" id="fileName"></div>
+            <div class="file-info" id="fileInfo"></div>
 
-            <button type="submit" class="btn">
+            <button class="btn">
                 Analyze Dataset
             </button>
 
@@ -43,41 +45,51 @@
 
 </div>
 
+<!-- Loading Overlay -->
+<div class="loader" id="loader">
+    <div class="spinner"></div>
+    <p>Analyzing your data...</p>
+</div>
+
 <script>
 const dropZone = document.getElementById("dropZone");
-const fileInput = document.getElementById("fileInput");
-const fileName = document.getElementById("fileName");
+const input = document.getElementById("fileInput");
+const fileInfo = document.getElementById("fileInfo");
+const form = document.getElementById("form");
+const loader = document.getElementById("loader");
 
-// Click to open file
-dropZone.addEventListener("click", () => fileInput.click());
+dropZone.onclick = () => input.click();
 
-// Drag over
-dropZone.addEventListener("dragover", (e) => {
+dropZone.ondragover = (e) => {
     e.preventDefault();
-    dropZone.classList.add("dragover");
-});
+    dropZone.classList.add("active");
+};
 
-// Drag leave
-dropZone.addEventListener("dragleave", () => {
-    dropZone.classList.remove("dragover");
-});
+dropZone.ondragleave = () => dropZone.classList.remove("active");
 
-// Drop file
-dropZone.addEventListener("drop", (e) => {
+dropZone.ondrop = (e) => {
     e.preventDefault();
-    fileInput.files = e.dataTransfer.files;
-    updateFileName();
-    dropZone.classList.remove("dragover");
-});
+    input.files = e.dataTransfer.files;
+    updateFile();
+};
 
-// File select
-fileInput.addEventListener("change", updateFileName);
+input.onchange = updateFile;
 
-function updateFileName() {
-    if (fileInput.files.length > 0) {
-        fileName.textContent = "Selected: " + fileInput.files[0].name;
+function updateFile() {
+    const file = input.files[0];
+    if (!file.name.endsWith(".csv")) {
+        fileInfo.innerHTML = "❌ Only CSV allowed";
+        fileInfo.style.color = "red";
+        return;
     }
+
+    fileInfo.innerHTML = "✔ " + file.name;
+    fileInfo.style.color = "#22c55e";
 }
+
+form.onsubmit = () => {
+    loader.style.display = "flex";
+};
 </script>
 
 </body>
