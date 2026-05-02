@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clustering Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(to right, #e3f2fd, #ffffff);
+        }
+        .card {
+            border-radius: 15px;
+        }
+        .title {
+            font-weight: 600;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container mt-5">
+
+    <div class="card shadow p-5">
+        <h2 class="text-center mb-3 title">Unsupervised Clustering Analyzer</h2>
+
+        <p class="text-center text-muted">
+            Compare K-Means, Hierarchical, and DBSCAN clustering algorithms 
+            using Silhouette Score and Elbow Method.
+        </p>
+
+        <hr>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Upload CSV Dataset</label>
+                <input type="file" class="form-control" name="dataset" accept=".csv" required>
+                <small class="text-muted">
+                    Only numeric columns will be used for clustering.
+                </small>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Analyze Dataset
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="text-center mt-4 text-muted">
+        <small>
+            Final Year Project | Clustering Algorithm Comparison using Machine Learning
+        </small>
+    </div>
+
+</div>
+</body>
+</html>
