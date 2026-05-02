@@ -51,6 +51,7 @@
     <p>Analyzing your data...</p>
 </div>
 
+
 <script>
 const dropZone = document.getElementById("dropZone");
 const input = document.getElementById("fileInput");
@@ -58,28 +59,45 @@ const fileInfo = document.getElementById("fileInfo");
 const form = document.getElementById("form");
 const loader = document.getElementById("loader");
 
-dropZone.onclick = () => input.click();
+// Open file picker
+dropZone.addEventListener("click", () => input.click());
 
-dropZone.ondragover = (e) => {
+// Drag over
+dropZone.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropZone.classList.add("active");
-};
+});
 
-dropZone.ondragleave = () => dropZone.classList.remove("active");
+// Drag leave
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("active");
+});
 
-dropZone.ondrop = (e) => {
+// Drop file
+dropZone.addEventListener("drop", (e) => {
     e.preventDefault();
-    input.files = e.dataTransfer.files;
-    updateFile();
-};
+    dropZone.classList.remove("active");
 
-input.onchange = updateFile;
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        input.files = files;
+        handleFile(files[0]);
+    }
+});
 
-function updateFile() {
-    const file = input.files[0];
-    if (!file.name.endsWith(".csv")) {
-        fileInfo.innerHTML = "❌ Only CSV allowed";
+// File selected via click
+input.addEventListener("change", (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+// 🔥 CENTRAL FUNCTION (important fix)
+function handleFile(file) {
+    if (!file.name.toLowerCase().endsWith(".csv")) {
+        fileInfo.innerHTML = "❌ Invalid file (Only CSV allowed)";
         fileInfo.style.color = "red";
+        input.value = ""; // reset input
         return;
     }
 
@@ -87,9 +105,10 @@ function updateFile() {
     fileInfo.style.color = "#22c55e";
 }
 
-form.onsubmit = () => {
+// Loader
+form.addEventListener("submit", () => {
     loader.style.display = "flex";
-};
+});
 </script>
 
 </body>
