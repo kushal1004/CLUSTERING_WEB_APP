@@ -1,63 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Clustering Analyzer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            background: linear-gradient(to right, #e3f2fd, #ffffff);
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .card {
-            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
-        .title {
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        input[type="file"] {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #00c6ff;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: white;
             font-weight: 600;
-            color: #0d6efd;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.7;
         }
     </style>
 </head>
 
 <body>
-<div class="container mt-5">
 
-    <div class="card shadow p-5">
-        <h2 class="text-center mb-3 title">Unsupervised Clustering Analyzer</h2>
+<div class="card">
+    <h2>🚀 Clustering Analyzer</h2>
+    <p>Upload your dataset & compare ML clustering algorithms</p>
 
-        <p class="text-center text-muted">
-            Compare K-Means, Hierarchical, and DBSCAN clustering algorithms 
-            using Silhouette Score and Elbow Method.
-        </p>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="dataset" accept=".csv" required>
+        <button type="submit">Analyze Dataset</button>
+    </form>
 
-        <hr>
-
-        <form action="/upload" method="post" enctype="multipart/form-data">
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Upload CSV Dataset</label>
-                <input type="file" class="form-control" name="dataset" accept=".csv" required>
-                <small class="text-muted">
-                    Only numeric columns will be used for clustering.
-                </small>
-            </div>
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    Analyze Dataset
-                </button>
-            </div>
-
-        </form>
+    <div class="footer">
+        Final Year Project • Machine Learning
     </div>
-
-    <div class="text-center mt-4 text-muted">
-        <small>
-            Final Year Project | Clustering Algorithm Comparison using Machine Learning
-        </small>
-    </div>
-
 </div>
+
 </body>
 </html>
