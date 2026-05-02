@@ -1,115 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <title>Clustering Analyzer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
 
-<body>
+  <body>
+    <div class="bg-blur"></div>
 
-<div class="bg-blur"></div>
-
-<div class="container">
-
-    <div class="header">
+    <div class="container">
+      <div class="header">
         <h1>Clustering Analyzer</h1>
         <p>Powerful ML insights in seconds</p>
-    </div>
+      </div>
 
-    <div class="card">
+      <div class="card">
+        <form
+          action="/upload"
+          method="post"
+          enctype="multipart/form-data"
+          id="form"
+        >
+          <div class="drop-zone" id="dropZone">
+            <input
+              type="file"
+              name="dataset"
+              id="fileInput"
+              accept=".csv"
+              hidden
+              required
+            />
 
-        <form action="/upload" method="post" enctype="multipart/form-data" id="form">
-
-            <div class="drop-zone" id="dropZone">
-                <input type="file" name="dataset" id="fileInput" accept=".csv" hidden required>
-
-                <div class="dz-content">
-                    <div class="icon">⬆</div>
-                    <h3>Drop your dataset</h3>
-                    <p>or click to browse (.csv only)</p>
-                </div>
+            <div class="dz-content">
+              <div class="icon">⬆</div>
+              <h3>Drop your dataset</h3>
+              <p>or click to browse (.csv only)</p>
             </div>
+          </div>
 
-            <div class="file-info" id="fileInfo"></div>
+          <div class="file-info" id="fileInfo"></div>
 
-            <button class="btn">
-                Analyze Dataset
-            </button>
-
+          <button class="btn">Analyze Dataset</button>
         </form>
-
+      </div>
     </div>
 
-</div>
+    <!-- Loading Overlay -->
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <p>Analyzing your data...</p>
+    </div>
+  </body>
 
-<!-- Loading Overlay -->
-<div class="loader" id="loader">
-    <div class="spinner"></div>
-    <p>Analyzing your data...</p>
-</div>
-
-
-<script>
-const dropZone = document.getElementById("dropZone");
-const input = document.getElementById("fileInput");
-const fileInfo = document.getElementById("fileInfo");
-const form = document.getElementById("form");
-const loader = document.getElementById("loader");
-
-// Open file picker
-dropZone.addEventListener("click", () => input.click());
-
-// Drag over
-dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.classList.add("active");
-});
-
-// Drag leave
-dropZone.addEventListener("dragleave", () => {
-    dropZone.classList.remove("active");
-});
-
-// Drop file
-dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("active");
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        input.files = files;
-        handleFile(files[0]);
-    }
-});
-
-// File selected via click
-input.addEventListener("change", (e) => {
-    if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
-    }
-});
-
-// 🔥 CENTRAL FUNCTION (important fix)
-function handleFile(file) {
-    if (!file.name.toLowerCase().endsWith(".csv")) {
-        fileInfo.innerHTML = "❌ Invalid file (Only CSV allowed)";
-        fileInfo.style.color = "red";
-        input.value = ""; // reset input
-        return;
-    }
-
-    fileInfo.innerHTML = "✔ " + file.name;
-    fileInfo.style.color = "#22c55e";
-}
-
-// Loader
-form.addEventListener("submit", () => {
-    loader.style.display = "flex";
-});
-</script>
-
-</body>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </html>
