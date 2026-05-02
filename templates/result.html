@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Results</title>
+    <title>Clustering Results</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap" rel="stylesheet">
@@ -14,11 +14,11 @@
 
     <!-- HEADER -->
     <div class="header">
-        <h1>Analysis Dashboard</h1>
-        <p>Clustering insights & performance metrics</p>
+        <h1>Clustering Dashboard</h1>
+        <p>Visual comparison of clustering algorithms</p>
     </div>
 
-    <!-- KPI CARDS -->
+    <!-- KPI -->
     <div class="kpi-grid">
         <div class="kpi">
             <h4>Best Clusters</h4>
@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <!-- SCORE BARS -->
+    <!-- SCORE -->
     <div class="card">
         <h3>Model Performance (Silhouette Score)</h3>
 
@@ -53,28 +53,47 @@
 
     <!-- TABS -->
     <div class="tabs">
-        <button class="tab active" onclick="showTab('kmeans')">K-Means</button>
-        <button class="tab" onclick="showTab('hier')">Hierarchical</button>
-        <button class="tab" onclick="showTab('db')">DBSCAN</button>
+        <button class="tab active" onclick="showTab(event,'kmeans')">K-Means</button>
+        <button class="tab" onclick="showTab(event,'hier')">Hierarchical</button>
+        <button class="tab" onclick="showTab(event,'db')">DBSCAN</button>
+        <button class="tab" onclick="showTab(event,'elbow')">Elbow</button>
     </div>
 
     <!-- TAB CONTENT -->
     <div class="tab-content active" id="kmeans">
-        <img src="/static/plots/kmeans.png">
+        <div class="graph-box">
+            <img src="/static/plots/kmeans.png" onclick="openModal(this)">
+            <div class="actions">
+                <button class="download-btn" onclick="downloadImage('/static/plots/kmeans.png')">⬇ Download</button>
+            </div>
+        </div>
     </div>
 
     <div class="tab-content" id="hier">
-        <img src="/static/plots/hierarchical.png">
+        <div class="graph-box">
+            <img src="/static/plots/hierarchical.png" onclick="openModal(this)">
+            <div class="actions">
+                <button class="download-btn" onclick="downloadImage('/static/plots/hierarchical.png')">⬇ Download</button>
+            </div>
+        </div>
     </div>
 
     <div class="tab-content" id="db">
-        <img src="/static/plots/dbscan.png">
+        <div class="graph-box">
+            <img src="/static/plots/dbscan.png" onclick="openModal(this)">
+            <div class="actions">
+                <button class="download-btn" onclick="downloadImage('/static/plots/dbscan.png')">⬇ Download</button>
+            </div>
+        </div>
     </div>
 
-    <!-- ELBOW -->
-    <div class="card">
-        <h3>Elbow Method</h3>
-        <img src="/static/plots/elbow.png">
+    <div class="tab-content" id="elbow">
+        <div class="graph-box">
+            <img src="/static/plots/elbow.png" onclick="openModal(this)">
+            <div class="actions">
+                <button class="download-btn" onclick="downloadImage('/static/plots/elbow.png')">⬇ Download</button>
+            </div>
+        </div>
     </div>
 
     <!-- BACK -->
@@ -84,13 +103,35 @@
 
 </div>
 
-<script>
-function showTab(id) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+<!-- FULLSCREEN MODAL -->
+<div id="imgModal" class="modal" onclick="closeModal()">
+    <img id="modalImg">
+</div>
 
-    event.target.classList.add('active');
+<script>
+function showTab(evt,id){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    evt.currentTarget.classList.add('active');
     document.getElementById(id).classList.add('active');
+}
+
+function openModal(img){
+    document.getElementById("imgModal").style.display="flex";
+    document.getElementById("modalImg").src=img.src;
+}
+
+function closeModal(){
+    document.getElementById("imgModal").style.display="none";
+}
+
+function downloadImage(url){
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="graph.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 </script>
 
