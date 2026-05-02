@@ -4,26 +4,81 @@
     <title>Clustering Analyzer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-<div class="card">
-    <h2>🚀 Clustering Analyzer</h2>
-    <p>Upload your dataset & compare ML clustering algorithms</p>
+<div class="wrapper">
 
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="dataset" accept=".csv" required>
-        <button type="submit">Analyze Dataset</button>
-    </form>
-
-    <div class="footer">
-        Final Year Project • Machine Learning
+    <div class="hero">
+        <h1>Clustering Analyzer</h1>
+        <p>Upload your dataset and discover hidden patterns using ML algorithms</p>
     </div>
+
+    <div class="upload-card">
+
+        <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+
+            <div class="drop-zone" id="dropZone">
+                <input type="file" name="dataset" id="fileInput" accept=".csv" hidden required>
+
+                <div class="upload-content">
+                    <div class="icon">📂</div>
+                    <p class="main-text">Drag & Drop your CSV file</p>
+                    <span>or click to browse</span>
+                </div>
+            </div>
+
+            <div class="file-name" id="fileName"></div>
+
+            <button type="submit" class="btn">
+                Analyze Dataset
+            </button>
+
+        </form>
+
+    </div>
+
 </div>
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+
+// Click to open file
+dropZone.addEventListener("click", () => fileInput.click());
+
+// Drag over
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
+
+// Drag leave
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("dragover");
+});
+
+// Drop file
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    fileInput.files = e.dataTransfer.files;
+    updateFileName();
+    dropZone.classList.remove("dragover");
+});
+
+// File select
+fileInput.addEventListener("change", updateFileName);
+
+function updateFileName() {
+    if (fileInput.files.length > 0) {
+        fileName.textContent = "Selected: " + fileInput.files[0].name;
+    }
+}
+</script>
 
 </body>
 </html>
