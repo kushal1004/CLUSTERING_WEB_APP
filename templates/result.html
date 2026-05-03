@@ -12,13 +12,11 @@
 
 <div class="container">
 
-    <!-- HEADER -->
     <div class="header">
         <h1>Clustering Dashboard</h1>
         <p>Visual comparison of clustering algorithms</p>
     </div>
 
-    <!-- KPI -->
     <div class="kpi-grid">
         <div class="kpi">
             <h4>Best Clusters</h4>
@@ -36,7 +34,6 @@
         </div>
     </div>
 
-    <!-- SCORE -->
     <div class="card">
         <h3>Model Performance (Silhouette Score)</h3>
 
@@ -51,7 +48,6 @@
         {% endfor %}
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
         <button class="tab active" onclick="showTab(event,'kmeans')">K-Means</button>
         <button class="tab" onclick="showTab(event,'hier')">Hierarchical</button>
@@ -59,7 +55,6 @@
         <button class="tab" onclick="showTab(event,'elbow')">Elbow</button>
     </div>
 
-    <!-- TAB CONTENT -->
     <div class="tab-content active" id="kmeans">
         <div class="graph-box">
             <img src="/static/plots/kmeans.png" onclick="openModal(this)">
@@ -96,43 +91,19 @@
         </div>
     </div>
 
-    <!-- BACK -->
     <div class="back">
         <a href="/">⬅ Back</a>
     </div>
 
 </div>
 
-<!-- FULLSCREEN MODAL -->
+
 <div id="imgModal" class="modal" onclick="closeModal()">
     <img id="modalImg">
 </div>
 
-<script>
-function showTab(evt,id){
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-    evt.currentTarget.classList.add('active');
-    document.getElementById(id).classList.add('active');
-}
+<script src="{{ url_for('static', filename='js/result.js') }}">
 
-function openModal(img){
-    document.getElementById("imgModal").style.display="flex";
-    document.getElementById("modalImg").src=img.src;
-}
-
-function closeModal(){
-    document.getElementById("imgModal").style.display="none";
-}
-
-function downloadImage(url){
-    const a=document.createElement("a");
-    a.href=url;
-    a.download="graph.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
 </script>
 
 </body>
