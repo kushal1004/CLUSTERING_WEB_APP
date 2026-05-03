@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
 from sklearn.metrics import silhouette_score
+from sklearn.decomposition import PCA
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -17,13 +18,19 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("static/plots", exist_ok=True)
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['dataset']
+
+    if file.filename == '':
+        return "No file selected"
+
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(filepath)
 
@@ -33,11 +40,19 @@ def upload():
     # Keep only numeric columns
     data = data.select_dtypes(include=['number']).dropna()
 
+    # ❌ Edge case
+    if data.shape[1] < 2:
+        return "Dataset must have at least 2 numeric columns"
+
     # Scale data
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(data)
 
-    # -------- FIND BEST K USING SILHOUETTE --------
+    # 🔥 PCA for better visualization
+    pca = PCA(n_components=2)
+    reduced_data = pca.fit_transform(scaled_data)
+
+    # -------- FIND BEST K --------
     best_k = 2
     best_score = -1
     inertias = []
@@ -46,32 +61,39 @@ def upload():
         kmeans = KMeans(n_clusters=k, random_state=42)
         labels = kmeans.fit_predict(scaled_data)
 
-        inertias.append(kmeans.inertia_)  # Store inertia for elbow
+        inertias.append(kmeans.inertia_)
 
-        score = silhouette_score(scaled_data, labels)
+        try:
+            score = silhouette_score(scaled_data, labels)
+            if score > best_score:
+                best_score = score
+                best_k = k
+        except:
+            continue
 
-        if score > best_score:
-            best_score = score
-            best_k = k
-
-    # -------- APPLY FINAL CLUSTERING --------
+    # -------- FINAL MODELS --------
     kmeans = KMeans(n_clusters=best_k, random_state=42)
     kmeans_labels = kmeans.fit_predict(scaled_data)
 
     hc = AgglomerativeClustering(n_clusters=best_k)
     hc_labels = hc.fit_predict(scaled_data)
 
-    db = DBSCAN(eps=0.5, min_samples=5)
+    # Slightly improved DBSCAN
+    db = DBSCAN(eps=0.7, min_samples=5)
     db_labels = db.fit_predict(scaled_data)
 
-    # -------- CALCULATE SILHOUETTE SCORES --------
-    score_kmeans = silhouette_score(scaled_data, kmeans_labels)
-    score_hier = silhouette_score(scaled_data, hc_labels)
+    # -------- SCORES --------
+    def safe_score(data, labels):
+        try:
+            if len(set(labels)) > 1 and -1 not in set(labels):
+                return silhouette_score(data, labels)
+        except:
+            pass
+        return -1
 
-    if len(set(db_labels)) > 1 and -1 not in set(db_labels):
-        score_db = silhouette_score(scaled_data, db_labels)
-    else:
-        score_db = -1
+    score_kmeans = safe_score(scaled_data, kmeans_labels)
+    score_hier = safe_score(scaled_data, hc_labels)
+    score_db = safe_score(scaled_data, db_labels)
 
     scores = {
         "K-Means": score_kmeans,
@@ -81,31 +103,31 @@ def upload():
 
     best_algorithm = max(scores, key=scores.get)
 
+    print("Scores:", scores)  # Debug
+
+    # -------- PLOT FUNCTION --------
+    def plot_clusters(data_2d, labels, title, filename):
+        plt.figure()
+        plt.scatter(data_2d[:, 0], data_2d[:, 1], c=labels, cmap='viridis', s=30)
+        plt.title(title)
+        plt.xlabel("Component 1")
+        plt.ylabel("Component 2")
+        plt.tight_layout()
+        plt.savefig(f"static/plots/{filename}")
+        plt.close()
+
     # -------- GENERATE PLOTS --------
-
-    # KMeans
-    plt.scatter(scaled_data[:, 0], scaled_data[:, 1], c=kmeans_labels)
-    plt.title("K-Means Clustering")
-    plt.savefig("static/plots/kmeans.png")
-    plt.close()
-
-    # Hierarchical
-    plt.scatter(scaled_data[:, 0], scaled_data[:, 1], c=hc_labels)
-    plt.title("Hierarchical Clustering")
-    plt.savefig("static/plots/hierarchical.png")
-    plt.close()
-
-    # DBSCAN
-    plt.scatter(scaled_data[:, 0], scaled_data[:, 1], c=db_labels)
-    plt.title("DBSCAN Clustering")
-    plt.savefig("static/plots/dbscan.png")
-    plt.close()
+    plot_clusters(reduced_data, kmeans_labels, "K-Means Clustering", "kmeans.png")
+    plot_clusters(reduced_data, hc_labels, "Hierarchical Clustering", "hierarchical.png")
+    plot_clusters(reduced_data, db_labels, "DBSCAN Clustering", "dbscan.png")
 
     # Elbow Method
-    plt.plot(range(2, 8), inertias)
+    plt.figure()
+    plt.plot(range(2, 8), inertias, marker='o')
     plt.xlabel("Number of Clusters (K)")
     plt.ylabel("Inertia")
     plt.title("Elbow Method")
+    plt.tight_layout()
     plt.savefig("static/plots/elbow.png")
     plt.close()
 
@@ -115,6 +137,7 @@ def upload():
         algo=best_algorithm,
         scores=scores
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True)
