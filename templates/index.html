@@ -1,64 +1,249 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Clustering Analyzer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        AI Clustering Analyzer
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
     <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-  </head>
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
-  <body>
-    <div class="bg-blur"></div>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 
-    <div class="container">
-      <div class="header">
-        <h1>Clustering Analyzer</h1>
-        <p>Powerful ML insights in seconds</p>
-      </div>
+</head>
 
-      <div class="card">
-        <form
-          action="/upload"
-          method="post"
-          enctype="multipart/form-data"
-          id="form"
-        >
-          <div class="drop-zone" id="dropZone">
-            <input
-              type="file"
-              name="dataset"
-              id="fileInput"
-              accept=".csv"
-              hidden
-              required
-            />
+<body>
 
-            <div class="dz-content">
-              <div class="icon">⬆</div>
-              <h3>Drop your dataset</h3>
-              <p>or click to browse (.csv only)</p>
+
+<div class="bg-grid"></div>
+
+
+<div class="blur blur-1"></div>
+
+<div class="blur blur-2"></div>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        ClusterAI
+
+    </div>
+
+    <div class="nav-right">
+
+        <span class="badge">
+            Machine Learning
+        </span>
+
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+    <div class="hero-left">
+
+        <div class="hero-badge">
+
+            AI Powered Clustering Analysis
+
+        </div>
+
+        <h1>
+
+            Visualize and Compare
+
+            <span>
+                Clustering Algorithms
+            </span>
+
+        </h1>
+
+        <p>
+
+            Upload your dataset and instantly compare
+            K-Means, Hierarchical and DBSCAN clustering
+            using advanced evaluation metrics and
+            interactive visualization.
+
+        </p>
+
+        
+
+        <div class="hero-stats">
+
+            <div class="stat-card">
+
+                <h3>
+                    3
+                </h3>
+
+                <span>
+                    Algorithms
+                </span>
+
             </div>
-          </div>
 
-          <div class="file-info" id="fileInfo"></div>
+            <div class="stat-card">
 
-          <button class="btn">Analyze Dataset</button>
-        </form>
-      </div>
+                <h3>
+                    AI
+                </h3>
+
+                <span>
+                    Analysis
+                </span>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>
+                    PCA
+                </h3>
+
+                <span>
+                    Visualization
+                </span>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="loader" id="loader">
-      <div class="spinner"></div>
-      <p>Analyzing your data...</p>
-    </div>
-  </body>
+    <div class="hero-right">
 
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <div class="upload-card">
+
+            <div class="card-glow"></div>
+
+            <div class="upload-top">
+
+                <h2>
+                    Upload Dataset
+                </h2>
+
+                <p>
+                    CSV format supported
+                </p>
+
+            </div>
+
+            <form
+                action="/upload"
+                method="POST"
+                enctype="multipart/form-data"
+                id="uploadForm"
+            >
+
+                <div class="drop-zone" id="dropZone">
+
+
+                    <input
+                        type="file"
+                        name="dataset"
+                        id="fileInput"
+                        accept=".csv"
+                        hidden
+                        required
+                    >
+
+
+                    <div class="upload-content">
+
+                        <div class="upload-icon">
+                            ⬆
+                        </div>
+
+                        <h3>
+                            Drag & Drop Dataset
+                        </h3>
+
+                        <p>
+                            or click to browse files
+                        </p>
+
+                        <div class="supported">
+
+                            Supports CSV files
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="analyze-btn"
+                    type="submit"
+                >
+
+                    <span>
+                        Analyze Dataset
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="loader" id="loader">
+
+    <div class="loader-box">
+
+        <div class="loader-ring"></div>
+
+        <h2>
+            Analyzing Dataset
+        </h2>
+
+        <p>
+            Running clustering algorithms and generating visualizations...
+        </p>
+
+    </div>
+
+</div>
+
+
+<script
+    src="{{ url_for('static', filename='js/main.js') }}"
+></script>
+
+</body>
 </html>
